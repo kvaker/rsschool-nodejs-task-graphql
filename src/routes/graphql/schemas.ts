@@ -1,4 +1,8 @@
 import { Type } from '@fastify/type-provider-typebox';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { userTypeDefs } from './types/user.js';
+import { userResolvers } from './resolvers/user.js';
+import { UUIDType } from './types/uuid.js';
 
 export const gqlResponseSchema = Type.Partial(
   Type.Object({
@@ -18,3 +22,8 @@ export const createGqlResponseSchema = {
     },
   ),
 };
+
+export const gqlSchema = makeExecutableSchema({
+  typeDefs: [userTypeDefs],
+  resolvers: [userResolvers, { UUID: UUIDType }],
+});
