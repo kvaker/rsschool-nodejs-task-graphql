@@ -15,6 +15,8 @@ import { UserType } from './types/user.js';
 import { userResolvers } from './resolvers/user.js';
 import { ProfileType } from './types/profile.js';
 import { profileResolvers } from './resolvers/profile.js';
+import { StatsType } from './types/stats.js';
+import { statsResolvers } from './resolvers/stats.js';
 
 export const gqlSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -41,6 +43,10 @@ export const gqlSchema = new GraphQLSchema({
           id: { type: new GraphQLNonNull(UUIDType) },
         },
         resolve: profileResolvers.Query.profile,
+      },
+      stats: {
+        type: StatsType,
+        resolve: statsResolvers.Query.stats,
       },
     },
   }),

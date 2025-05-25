@@ -48,6 +48,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         variableValues: variables,
         contextValue: {
           prisma,
+          prismaStats: fastify.prismaStats,
           loaders,
         },
       });
