@@ -1,3 +1,4 @@
+import { Type } from '@fastify/type-provider-typebox';
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -91,4 +92,21 @@ export const gqlSchema = new GraphQLSchema({
       },
     },
   }),
+});
+
+export const createGqlResponseSchema = {
+  body: Type.Object(
+    {
+      query: Type.String(),
+      variables: Type.Optional(Type.Record(Type.String(), Type.Any())),
+    },
+    {
+      additionalProperties: false,
+    },
+  ),
+};
+
+export const gqlResponseSchema = Type.Object({
+  data: Type.Any(),
+  errors: Type.Optional(Type.Array(Type.Any())),
 });
