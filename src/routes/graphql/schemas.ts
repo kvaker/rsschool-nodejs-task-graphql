@@ -17,6 +17,8 @@ import { ProfileType } from './types/profile.js';
 import { profileResolvers } from './resolvers/profile.js';
 import { StatsType } from './types/stats.js';
 import { statsResolvers } from './resolvers/stats.js';
+import { MemberType } from './types/memberType.js';
+import { memberTypeResolvers } from './resolvers/memberType.js';
 
 export const gqlSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -47,6 +49,17 @@ export const gqlSchema = new GraphQLSchema({
       stats: {
         type: StatsType,
         resolve: statsResolvers.Query.stats,
+      },
+      memberTypes: {
+        type: new GraphQLList(MemberType),
+        resolve: memberTypeResolvers.Query.memberTypes,
+      },
+      memberType: {
+        type: MemberType,
+        args: {
+          id: { type: new GraphQLNonNull(GraphQLID) },
+        },
+        resolve: memberTypeResolvers.Query.memberType,
       },
     },
   }),
