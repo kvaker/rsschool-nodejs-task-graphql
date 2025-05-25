@@ -1,10 +1,15 @@
 import DataLoader from 'dataloader';
 
-export const createUserLoader = (prisma) =>
-  new DataLoader(async (ids: readonly string[]) => {
-    const users = await prisma.user.findMany({
-      where: { id: { in: ids as string[] } },
+export function createUserFollowersLoader(prisma) {
+  return new DataLoader(async (userIds) => {
+    const usersWithFollowers = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      include: { userSubscribedTo: true },
     });
-    const userMap = new Map(users.map((u) => [u.id, u]));
-    return ids.map((id) => userMap.get(id));
+
+    const userMap = new Map();
+    usersWithFollowers.forEach((user) => userMap.set(user.id, user.userSubscribedTo));
+
+    return userIds.map((id) => userMap.get(id) || []);
   });
+}

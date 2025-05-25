@@ -1,19 +1,23 @@
-export const userTypeDefs = `
-  scalar UUID
+import {
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLFloat,
+  GraphQLList,
+  GraphQLID,
+} from 'graphql';
 
-  type User {
-    id: UUID!
-    name: String!
-    balance: Float!
-    followers: [User!]!
-  }
-
-  type Query {
-    users: [User!]!
-    user(id: UUID!): User
-  }
-
-  type Mutation {
-    createUser(name: String!, balance: Float!): User!
-  }
-`;
+export const UserType: GraphQLObjectType = new GraphQLObjectType({
+  name: 'User',
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLID) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    balance: { type: new GraphQLNonNull(GraphQLFloat) },
+    followers: {
+      type: new GraphQLList(new GraphQLNonNull(GraphQLID)),
+      resolve: async (parent, _args, { loaders }) => {
+        return loaders.userFollowers.load(parent.id);
+      },
+    },
+  }),
+});

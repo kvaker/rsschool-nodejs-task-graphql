@@ -1,29 +1,34 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { createGqlResponseSchema, gqlResponseSchema } from './schemas.js';
-
 import { parse, validate, execute, specifiedRules } from 'graphql';
 import depthLimit from 'graphql-depth-limit';
 
 import { gqlSchema } from './schemas.js';
-import { createUserLoader } from './loaders/userLoader.js';
+import { createUserFollowersLoader } from './loaders/userLoader.js';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
   const { prisma } = fastify;
 
   fastify.route({
-    url: '/',
+    url: '/graphql',
     method: 'POST',
     schema: {
-      ...createGqlResponseSchema,
-      response: {
-        200: gqlResponseSchema,
+      body: {
+        type: 'object',
+        properties: {
+          query: { type: 'string' },
+          variables: { type: 'object' },
+        },
+        required: ['query'],
       },
     },
     async handler(req) {
-      const { query, variables } = req.body;
+      const { query, variables } = req.body as {
+        query: string;
+        variables?: Record<string, unknown>;
+      };
 
       const loaders = {
-        user: createUserLoader(prisma),
+        userFollowers: createUserFollowersLoader(prisma),
       };
 
       const document = parse(query);

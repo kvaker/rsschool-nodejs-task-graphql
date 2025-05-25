@@ -1,29 +1,44 @@
-import { Type } from '@fastify/type-provider-typebox';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { userTypeDefs } from './types/user.js';
-import { userResolvers } from './resolvers/user.js';
+import {
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLFloat,
+  GraphQLList,
+  GraphQLNonNull,
+} from 'graphql';
+
 import { UUIDType } from './types/uuid.js';
+import { UserType } from './types/user.js';
+import { userResolvers } from './resolvers/user.js';
 
-export const gqlResponseSchema = Type.Partial(
-  Type.Object({
-    data: Type.Any(),
-    errors: Type.Any(),
+export const gqlSchema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      users: {
+        type: new GraphQLList(UserType),
+        resolve: userResolvers.Query.users,
+      },
+      user: {
+        type: UserType,
+        args: {
+          id: { type: new GraphQLNonNull(UUIDType) },
+        },
+        resolve: userResolvers.Query.user,
+      },
+    },
   }),
-);
 
-export const createGqlResponseSchema = {
-  body: Type.Object(
-    {
-      query: Type.String(),
-      variables: Type.Optional(Type.Record(Type.String(), Type.Any())),
+  mutation: new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+      createUser: {
+        type: UserType,
+        args: {
+          name: { type: new GraphQLNonNull(GraphQLString) },
+          balance: { type: new GraphQLNonNull(GraphQLFloat) },
+        },
+      },
     },
-    {
-      additionalProperties: false,
-    },
-  ),
-};
-
-export const gqlSchema = makeExecutableSchema({
-  typeDefs: [userTypeDefs],
-  resolvers: [userResolvers, { UUID: UUIDType }],
+  }),
 });
