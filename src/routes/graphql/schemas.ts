@@ -5,6 +5,9 @@ import {
   GraphQLFloat,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLBoolean,
+  GraphQLInt,
+  GraphQLID,
 } from 'graphql';
 
 import { UUIDType } from './types/uuid.js';
@@ -53,7 +56,20 @@ export const gqlSchema = new GraphQLSchema({
         },
         resolve: userResolvers.Mutation.createUser,
       },
-      
+
+      createProfile: {
+        type: ProfileType,
+        args: {
+          isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
+          yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
+          userId: { type: new GraphQLNonNull(GraphQLID) },
+          memberTypeId: { type: new GraphQLNonNull(GraphQLID) },
+        },
+        resolve: async (_parent, args, context) => {
+          const { prisma } = context;
+          return prisma.profile.create({ data: args });
+        },
+      },
     },
   }),
 });
