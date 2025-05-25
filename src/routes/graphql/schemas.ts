@@ -53,6 +53,7 @@ export const gqlSchema = new GraphQLSchema({
         },
         resolve: userResolvers.Mutation.createUser,
       },
+      
     },
   }),
 });
