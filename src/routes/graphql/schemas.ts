@@ -10,6 +10,8 @@ import {
 import { UUIDType } from './types/uuid.js';
 import { UserType } from './types/user.js';
 import { userResolvers } from './resolvers/user.js';
+import { ProfileType } from './types/profile.js';
+import { profileResolvers } from './resolvers/profile.js';
 
 export const gqlSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -26,6 +28,17 @@ export const gqlSchema = new GraphQLSchema({
         },
         resolve: userResolvers.Query.user,
       },
+      profiles: {
+        type: new GraphQLList(ProfileType),
+        resolve: profileResolvers.Query.profiles,
+      },
+      profile: {
+        type: ProfileType,
+        args: {
+          id: { type: new GraphQLNonNull(UUIDType) },
+        },
+        resolve: profileResolvers.Query.profile,
+      },
     },
   }),
 
@@ -38,6 +51,7 @@ export const gqlSchema = new GraphQLSchema({
           name: { type: new GraphQLNonNull(GraphQLString) },
           balance: { type: new GraphQLNonNull(GraphQLFloat) },
         },
+        resolve: userResolvers.Mutation.createUser,
       },
     },
   }),
