@@ -20,6 +20,8 @@ import { StatsType } from './types/stats.js';
 import { statsResolvers } from './resolvers/stats.js';
 import { MemberType } from './types/memberType.js';
 import { memberTypeResolvers } from './resolvers/memberType.js';
+import { PostType } from './types/post.js';
+import { postResolvers } from './resolvers/post.js';
 
 export const gqlSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -46,6 +48,17 @@ export const gqlSchema = new GraphQLSchema({
           id: { type: new GraphQLNonNull(UUIDType) },
         },
         resolve: profileResolvers.Query.profile,
+      },
+      posts: {
+        type: new GraphQLList(PostType),
+        resolve: postResolvers.Query.posts,
+      },
+      post: {
+        type: PostType,
+        args: {
+          id: { type: new GraphQLNonNull(UUIDType) },
+        },
+        resolve: postResolvers.Query.post,
       },
       stats: {
         type: StatsType,
@@ -76,7 +89,6 @@ export const gqlSchema = new GraphQLSchema({
         },
         resolve: userResolvers.Mutation.createUser,
       },
-
       createProfile: {
         type: ProfileType,
         args: {
@@ -89,6 +101,31 @@ export const gqlSchema = new GraphQLSchema({
           const { prisma } = context;
           return prisma.profile.create({ data: args });
         },
+      },
+      createPost: {
+        type: PostType,
+        args: {
+          title: { type: new GraphQLNonNull(GraphQLString) },
+          content: { type: new GraphQLNonNull(GraphQLString) },
+          authorId: { type: new GraphQLNonNull(UUIDType) },
+        },
+        resolve: postResolvers.Mutation.createPost,
+      },
+      updatePost: {
+        type: PostType,
+        args: {
+          id: { type: new GraphQLNonNull(UUIDType) },
+          title: { type: GraphQLString },
+          content: { type: GraphQLString },
+        },
+        resolve: postResolvers.Mutation.updatePost,
+      },
+      deletePost: {
+        type: PostType,
+        args: {
+          id: { type: new GraphQLNonNull(UUIDType) },
+        },
+        resolve: postResolvers.Mutation.deletePost,
       },
     },
   }),
