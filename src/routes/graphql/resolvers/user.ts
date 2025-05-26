@@ -10,7 +10,7 @@ export const userResolvers = {
 
       if (shouldIncludeFollowers) {
         for (const user of users) {
-          loaders.userFollowers.prime(user.id, user.userSubscribedTo);
+          loaders.userFollowers.prime(user.id, user.userSubscribedTo || []);
         }
       }
 
@@ -31,8 +31,10 @@ export const userResolvers = {
   },
 
   User: {
-    userSubscribedTo: async (parent, _args, { loaders }) => {
-      return loaders.userFollowers.load(parent.id);
-    },
-  },
+  userSubscribedTo: (parent, _args, { loaders }) =>
+    loaders.postAuthorLoader.load(parent.id),
+
+  subscribedToUser: (parent, _args, { loaders }) =>
+    loaders.userFollowersLoader.load(parent.id),
+},
 };

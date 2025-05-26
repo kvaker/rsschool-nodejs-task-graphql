@@ -42,7 +42,7 @@
     "@fastify/type-provider-typebox": "^4.0.0",
     "@graphql-tools/schema": "^10.0.23",
     "@prisma/client": "^5.0.0",
-    "dataloader": "^2.1.0",
+    "dataloader": "^2.2.3",
     "fastify": "^4.0.0",
     "fastify-cli": "^6.0.0",
     "fastify-plugin": "^4.0.0",

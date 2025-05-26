@@ -6,6 +6,15 @@ export const profileResolvers = {
     profile: async (_parent, { id }, { prisma }) => {
       return prisma.profile.findUnique({
         where: { id },
+        include: { memberType: true }, 
+      });
+    },
+  },
+
+  Profile: {
+    memberType: async (parent, _args, { prisma }) => {
+      return prisma.memberType.findUnique({
+        where: { id: parent.memberTypeId },
       });
     },
   },
