@@ -24,21 +24,26 @@ export const postResolvers = {
   },
 
   Mutation: {
-    createPost: async (_parent, { title, content, authorId }, { prisma }) => {
-      return prisma.post.create({
-        data: { title, content, authorId },
-      });
-    },
-
-    updatePost: async (_parent, { id, title, content }, { prisma }) => {
-      return prisma.post.update({
-        where: { id },
-        data: { title, content },
-      });
-    },
-
-    deletePost: async (_parent, { id }, { prisma }) => {
-      return prisma.post.delete({ where: { id } });
-    },
+  createPost: async (_parent, { title, content, authorId }, { prisma }) => {
+    return prisma.post.create({
+      data: { title, content, authorId },
+      include: { author: true },
+    });
   },
+
+  updatePost: async (_parent, { id, title, content }, { prisma }) => {
+    return prisma.post.update({
+      where: { id },
+      data: { title, content },
+      include: { author: true },
+    });
+  },
+
+  deletePost: async (_parent, { id }, { prisma }) => {
+    return prisma.post.delete({
+      where: { id },
+      include: { author: true },
+    });
+  },
+},
 };
